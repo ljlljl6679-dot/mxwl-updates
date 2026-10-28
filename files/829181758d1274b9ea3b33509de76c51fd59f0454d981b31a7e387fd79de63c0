@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>语音厅 · 数字炸弹</title>
+<style>
+  :root{
+    --bg1:#120b2a;
+    --bg2:#24104a;
+    --panel:rgba(255,255,255,.09);
+    --panel2:rgba(255,255,255,.14);
+    --text:#fff;
+    --muted:#cfc8e8;
+    --accent:#ff6fd8;
+    --accent2:#7f7cff;
+    --good:#64f0c8;
+    --danger:#ff5577;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:
+    radial-gradient(circle at 20% 15%, rgba(255,111,216,.22), transparent 34%),
+    radial-gradient(circle at 85% 20%, rgba(127,124,255,.25), transparent 34%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--text);overflow:hidden}
+  body:before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:42px 42px
+  }
+  .app{height:100%;display:flex;flex-direction:column;padding:24px;gap:18px}
+  .top{display:flex;align-items:center;justify-content:space-between}
+  .title{font-size:clamp(30px,4vw,58px);font-weight:900;letter-spacing:4px;text-shadow:0 4px 22px rgba(255,111,216,.35)}
+  .sub{font-size:16px;color:var(--muted);margin-top:4px}
+  .badge{padding:10px 16px;border-radius:999px;background:var(--panel);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(10px);font-weight:700}
+  .main{flex:1;display:grid;grid-template-columns:1fr 360px;gap:18px;min-height:0}
+  .stage,.side{background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:28px;backdrop-filter:blur(14px);box-shadow:0 18px 60px rgba(0,0,0,.22)}
+  .stage{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:28px}
+  .range-label{font-size:22px;color:var(--muted);margin-bottom:10px}
+  .range{font-size:clamp(70px,11vw,150px);font-weight:1000;line-height:1;letter-spacing:3px;text-align:center}
+  .range .dash{color:var(--accent);padding:0 18px}
+  .hint{margin-top:22px;font-size:22px;color:#eee}
+  .current{margin-top:16px;font-size:18px;color:var(--good);min-height:28px}
+  .bomb{
+    position:absolute;right:50px;bottom:35px;width:92px;height:92px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#555,#111 55%,#050505);
+    box-shadow:inset -12px -12px 20px #000, 0 12px 28px rgba(0,0,0,.4);
+  }
+  .bomb:before{content:"";position:absolute;width:34px;height:12px;background:#a8733f;right:-12px;top:5px;transform:rotate(-35deg);border-radius:8px}
+  .bomb:after{content:"✦";position:absolute;right:-28px;top:-26px;font-size:40px;color:#ffd66b;text-shadow:0 0 18px #ff9f43}
+  .side{padding:20px;display:flex;flex-direction:column;gap:14px;min-height:0}
+  .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:20px;padding:16px}
+  .card h3{margin:0 0 12px;font-size:17px}
+  input{
+    width:100%;border:1px solid rgba(255,255,255,.14);outline:none;background:rgba(0,0,0,.22);color:#fff;
+    padding:13px 14px;border-radius:14px;font-size:18px
+  }
+  input:focus{border-color:rgba(255,111,216,.65);box-shadow:0 0 0 3px rgba(255,111,216,.12)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  button{
+    border:none;cursor:pointer;border-radius:14px;padding:13px 14px;font-size:16px;font-weight:800;color:white;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 24px rgba(127,124,255,.22);
+    transition:.18s transform,.18s filter
+  }
+  button:hover{transform:translateY(-1px);filter:brightness(1.07)}
+  button:active{transform:translateY(1px)}
+  button.secondary{background:rgba(255,255,255,.10);box-shadow:none;border:1px solid rgba(255,255,255,.12)}
+  .history{flex:1;overflow:auto;padding-right:4px}
+  .item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.055);margin-bottom:8px}
+  .item b{font-size:18px}.item span{color:var(--muted);font-size:14px}
+  .footer{font-size:13px;color:#aaa7bc;text-align:center}
+  .overlay{position:fixed;inset:0;background:rgba(6,3,16,.86);display:none;align-items:center;justify-content:center;z-index:10;text-align:center}
+  .overlay.show{display:flex;animation:fade .22s ease}
+  .boom{font-size:clamp(72px,11vw,160px);animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+  .lose{font-size:clamp(28px,5vw,64px);font-weight:1000;margin-top:10px}
+  .secret{font-size:26px;color:#ffd9f2;margin:12px 0 22px}
+  .overlay button{font-size:20px;padding:15px 28px}
+  @keyframes pop{0%{transform:scale(.2) rotate(-10deg)}70%{transform:scale(1.16) rotate(3deg)}100%{transform:scale(1)}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .shake{animation:shake .35s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}50%{transform:translateX(12px)}75%{transform:translateX(-7px)}}
+  .spark{position:absolute;border-radius:50%;pointer-events:none;background:#fff;animation:spark 700ms ease-out forwards}
+  @keyframes spark{to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}}
+  @media(max-width:900px){
+    body{overflow:auto}.app{height:auto;min-height:100%;padding:14px}.main{grid-template-columns:1fr}.side{min-height:500px}.bomb{opacity:.45}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div>
+      <div class="title">💣 数字炸弹</div>
+      <div class="sub">语音厅投屏小游戏 · 猜中炸弹数字的人接受惩罚</div>
+    </div>
+    <div class="badge">当前局：<span id="round">1</span></div>
+  </div>
+
+  <div class="main">
+    <section class="stage" id="stage">
+      <div class="range-label">安全范围</div>
+      <div class="range"><span id="low">1</span><span class="dash">—</span><span id="high">100</span></div>
+      <div class="hint">输入范围内的数字进行猜测</div>
+      <div class="current" id="message">等待第一位玩家挑战…</div>
+      <div class="bomb"></div>
+    </section>
+
+    <aside class="side">
+      <div class="card">
+        <h3>🎤 当前玩家</h3>
+        <input id="player" placeholder="输入玩家名字，例如：妖夭" maxlength="16">
+      </div>
+
+      <div class="card">
+        <h3>🔢 猜一个数字</h3>
+        <input id="guess" type="number" min="1" max="100" placeholder="1 - 100">
+        <div style="height:10px"></div>
+        <button id="guessBtn" style="width:100%">提交猜测</button>
+      </div>
+
+      <div class="row">
+        <button class="secondary" id="newBtn">🔄 新一局</button>
+        <button class="secondary" id="fullBtn">⛶ 全屏</button>
+      </div>
+
+      <div class="card history">
+        <h3>📜 本局记录</h3>
+        <div id="history"></div>
+      </div>
+
+      <div class="footer">按 Enter 可快速提交 · 炸弹数字仅系统知道</div>
+    </aside>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div>
+    <div class="boom">💥</div>
+    <div class="lose" id="loseText">BOOM！</div>
+    <div class="secret" id="secretText"></div>
+    <button id="againBtn">再来一局</button>
+  </div>
+</div>
+
+<script>
+let low=1, high=100, bomb=randomBomb(), round=1, ended=false;
+const $=id=>document.getElementById(id);
+
+function randomBomb(){ return Math.floor(Math.random()*100)+1; }
+
+function render(){
+  $("low").textContent=low;
+  $("high").textContent=high;
+  $("round").textContent=round;
+  $("guess").min=low;
+  $("guess").max=high;
+  $("guess").placeholder=`${low} - ${high}`;
+}
+
+function burst(){
+  const stage=$("stage");
+  const rect=stage.getBoundingClientRect();
+  for(let i=0;i<36;i++){
+    const s=document.createElement("i");
+    s.className="spark";
+    const size=Math.random()*8+4;
+    s.style.width=s.style.height=size+"px";
+    s.style.left=(rect.width/2)+"px";
+    s.style.top=(rect.height/2)+"px";
+    const a=Math.random()*Math.PI*2, d=90+Math.random()*220;
+    s.style.setProperty("--x",Math.cos(a)*d+"px");
+    s.style.setProperty("--y",Math.sin(a)*d+"px");
+    stage.appendChild(s);
+    setTimeout(()=>s.remove(),800);
+  }
+}
+
+function addHistory(name, n, result){
+  const div=document.createElement("div");
+  div.className="item";
+  div.innerHTML=`<div><b>${escapeHtml(name || "神秘玩家")}</b><br><span>${result}</span></div><b>${n}</b>`;
+  $("history").prepend(div);
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+}
+
+function submitGuess(){
+  if(ended) return;
+  const name=$("player").value.trim() || "神秘玩家";
+  const n=Number($("guess").value);
+  if(!Number.isInteger(n) || n<low || n>high){
+    $("message").textContent=`请输入 ${low} 到 ${high} 之间的整数`;
+    $("stage").classList.remove("shake"); void $("stage").offsetWidth; $("stage").classList.add("shake");
+    return;
+  }
+
+  if(n===bomb){
+    ended=true;
+    addHistory(name,n,"💥 猜中炸弹");
+    $("message").textContent=`${name} 踩中炸弹！`;
+    $("loseText").textContent=`${name} · BOOM！`;
+    $("secretText").textContent=`炸弹数字：${bomb}`;
+    burst();
+    setTimeout(()=>$("overlay").classList.add("show"),260);
+    return;
+  }
+
+  if(n<bomb){
+    addHistory(name,n,"⬆️ 炸弹更大");
+    low=Math.max(low,n+1);
+    $("message").textContent=`${name} 猜了 ${n}，范围继续缩小`;
+  }else{
+    addHistory(name,n,"⬇️ 炸弹更小");
+    high=Math.min(high,n-1);
+    $("message").textContent=`${name} 猜了 ${n}，范围继续缩小`;
+  }
+  $("guess").value="";
+  render();
+
+  if(low===high && low===bomb){
+    $("message").textContent=`只剩最后一个数字：${bomb} 😈`;
+  }
+  $("guess").focus();
+}
+
+function newRound(){
+  low=1;high=100;bomb=randomBomb();round++;ended=false;
+  $("history").innerHTML="";
+  $("message").textContent="新一局开始，等待玩家挑战…";
+  $("guess").value="";
+  $("overlay").classList.remove("show");
+  render();
+  $("player").focus();
+}
+
+$("guessBtn").addEventListener("click",submitGuess);
+$("guess").addEventListener("keydown",e=>{if(e.key==="Enter") submitGuess();});
+$("player").addEventListener("keydown",e=>{if(e.key==="Enter") $("guess").focus();});
+$("newBtn").addEventListener("click",newRound);
+$("againBtn").addEventListener("click",newRound);
+$("fullBtn").addEventListener("click",async()=>{
+  try{
+    if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){}
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+麦向未莱游戏中心 · 已创建仓库，接下来这样操作
+
+仓库地址：https://github.com/ljlljl6679-dot/mxwl-updates
+未来更新地址：https://ljlljl6679-dot.github.io/mxwl-updates/manifest.json
+
+一、在 Windows 电脑安装 Git for Windows： https://git-scm.com/downloads/win
+二、将本目录完整解压到电脑，不要只解压 .bat 文件。
+三、双击「一键上传到GitHub.bat」，需要时在浏览器登录拥有该仓库权限的 GitHub 账号。
+四、上传成功后，打开仓库 Settings > Pages > Deploy from a branch > main > /(root) > Save。
+五、访问以上 manifest.json 地址，返回 JSON 内容表示站点已经公开。
+六、先用新的 V3.2 安装程序安装，或者在已安装的 V3.2「在线更新」里把地址改成以上新地址。
+
+提示：GitHub Pages 免费托管的是静态更新文件，不是在线玩家服务器；仓库请保持 Public。
+安全：本目录不包含管理员私钥。千万不要把管理员工具 zip 或 admin_private_key.txt 上传到这个公开仓库。

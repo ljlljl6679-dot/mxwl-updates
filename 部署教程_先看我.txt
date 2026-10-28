@@ -1,0 +1,40 @@
+﻿麦向未莱游戏中心 · 长期在线更新服务器部署教程
+==================================================
+
+推荐：GitHub Pages（免费静态托管，电脑关机也可以提供更新文件）
+
+你的 GitHub 账号：ljlljl6679-dot
+建议新建仓库名称：mxwl-updates
+创建入口：https://github.com/new
+预计更新清单地址：https://ljlljl6679-dot.github.io/mxwl-updates/manifest.json
+【注意：目前只是预计地址，创建并部署后才会真实可访问】
+
+第一步：打开 https://github.com/new
+    Repository name 填：mxwl-updates
+    Visibility 选择 Public
+    不要勾选 Add a README / .gitignore / license，创建空仓库。
+
+第二步：电脑安装 Git for Windows（https://git-scm.com/downloads/win）。
+    解压本压缩包，双击目录内「一键上传到GitHub.bat」。
+    如果 Git 提示登录，在浏览器中完成 GitHub 授权即可，不必把密码给别人。
+
+第三步：打开 https://github.com/ljlljl6679-dot/mxwl-updates/settings/pages
+    Source 选 Deploy from a branch
+    Branch 选 main，Folder 选 /(root)，点击 Save。
+
+第四步：打开 https://ljlljl6679-dot.github.io/mxwl-updates/manifest.json
+    能看到 manifest.json / schema:1 / version:3.2.0 说明更新站点可访问。
+
+第五步：安装 V3.2 时在「统一更新地址」中填写这个 URL；
+    已经装好的用户可以到游戏中心的「在线更新」设置页面填一次。
+    以后每次更新，无需让用户重新填写。
+
+以后更新：
+    ① 管理员发布工具中修改游戏文件与大厅清单。
+    ② 使用管理员发布工具生成版本 3.2.1、3.2.2 等更新目录。
+    ③ 在本部署目录双击「同步新版本并上传.bat」，输入更新目录路径。
+    ④ 成功推送后，GitHub Pages 自动部署，用户下次在线检查更新时收到提醒。
+
+【重要】不能把 admin_private_key.txt、管理员发布工具.zip 上传到仓库。
+【重要】这是用于下载更新的 HTTPS 静态服务器，不是游戏玩家实时联网联机服务器。
+【重要】目前未实际在 GitHub 上创建仓库，不能宣称已经上线。

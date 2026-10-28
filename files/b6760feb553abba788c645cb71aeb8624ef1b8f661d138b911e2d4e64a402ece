@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你画我猜 · 投屏端</title>
+<style>
+:root{--bg1:#140824;--bg2:#2b1250;--bg3:#52217d;--panel:rgba(255,255,255,.10);--border:rgba(255,255,255,.14);--text:#fff;--muted:#d8cbea;--gold:#b874ff}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;color:var(--text)}
+body{overflow:hidden;background:radial-gradient(circle at 18% 12%,rgba(191,116,255,.24),transparent 30%),radial-gradient(circle at 84% 16%,rgba(124,102,255,.20),transparent 30%),linear-gradient(135deg,var(--bg1),var(--bg2) 56%,var(--bg3))}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:44px 44px}
+.app{height:100%;padding:20px;display:flex;flex-direction:column;gap:14px}
+.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:32px;background:linear-gradient(135deg,#ffe36b,#7c66ff)}
+.title{font-size:clamp(30px,4vw,58px);font-weight:1000;letter-spacing:3px}
+.sub{font-size:13px;color:var(--muted);margin-top:5px}
+.timer{font-size:clamp(28px,4vw,48px);font-weight:1000;padding:10px 22px;border-radius:18px;background:rgba(0,0,0,.18);text-align:center}
+.round{text-align:right;font-size:18px;color:var(--muted)} .round b{display:block;font-size:28px;color:white}
+.questionbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:13px 18px}
+.leftmeta{color:var(--muted);font-size:14px}.word{text-align:center;font-size:clamp(30px,4.5vw,64px);font-weight:1000;letter-spacing:8px;color:#ecd9ff;text-shadow:0 0 24px rgba(198,142,255,.38)}.cat{text-align:right;color:var(--muted);font-size:14px}
+.canvaswrap{flex:1;min-height:0;background:white;border-radius:28px;overflow:hidden;position:relative;box-shadow:0 20px 65px rgba(0,0,0,.3)}
+canvas{width:100%;height:100%;display:block}
+.watermark{position:absolute;left:18px;bottom:12px;color:#bca9d2;font-size:13px}
+.bottom{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
+.drawer,.latest,.status{background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:17px;padding:11px 15px;font-size:15px}
+.drawer b,.latest b{color:#ecd9ff;font-size:19px}.latest{text-align:center;min-width:260px}.status{text-align:right;color:var(--muted)}
+.overlay{position:fixed;inset:0;background:rgba(12,5,25,.86);display:none;align-items:center;justify-content:center;text-align:center;z-index:10}.overlay.show{display:flex}
+.result{padding:36px 48px;border-radius:30px;background:linear-gradient(145deg,rgba(102,50,151,.92),rgba(35,17,67,.95));border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 100px rgba(0,0,0,.46)}
+.emoji{font-size:88px}.headline{font-size:50px;font-weight:1000}.answer{font-size:34px;color:#ead5ff;margin-top:12px;font-weight:1000}
+.fullbtn{position:fixed;right:15px;bottom:15px;z-index:12;border:none;border-radius:999px;padding:10px 13px;cursor:pointer;background:rgba(0,0,0,.30);color:white;border:1px solid rgba(255,255,255,.15)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><div class="logo">💜</div><div><div class="title">你画我猜</div><div class="sub">语音厅投屏端 · 观众界面</div></div></div>
+    <div class="timer" id="timer">60s</div>
+    <div class="round">当前题目<b id="round">第 0 题</b></div>
+  </div>
+
+  <div class="questionbar">
+    <div class="leftmeta" id="drawer">画手：等待开始</div>
+    <div class="word" id="word">等待主持出题</div>
+    <div class="cat" id="category">准备中</div>
+  </div>
+
+  <div class="canvaswrap" id="wrap">
+    <canvas id="board"></canvas>
+    <div class="watermark">语音厅 · 你画我猜</div>
+  </div>
+
+  <div class="bottom">
+    <div class="drawer">🎤 画手：<b id="drawerBottom">等待开始</b></div>
+    <div class="latest">💬 最新猜测：<b id="latest">—</b></div>
+    <div class="status" id="status">等待主持开始游戏</div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="result">
+    <div class="emoji" id="emoji">🎉</div>
+    <div class="headline" id="headline">公布答案</div>
+    <div class="answer" id="answer">—</div>
+  </div>
+</div>
+<button class="fullbtn" id="full">⛶ 全屏</button>
+
+<script>
+const $=id=>document.getElementById(id);
+const canvas=$("board"),ctx=canvas.getContext("2d");let drawing=false,lastState=null;
+function resize(){
+  const r=$("wrap").getBoundingClientRect();const old=canvas.width?canvas.toDataURL("image/png"):null;
+  canvas.width=Math.max(300,Math.floor(r.width*devicePixelRatio));canvas.height=Math.max(300,Math.floor(r.height*devicePixelRatio));
+  canvas.style.width=r.width+"px";canvas.style.height=r.height+"px";ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);ctx.lineCap="round";ctx.lineJoin="round";ctx.fillStyle="#fff";ctx.fillRect(0,0,r.width,r.height);
+  if(old){const im=new Image();im.onload=()=>ctx.drawImage(im,0,0,r.width,r.height);im.src=old}
+}
+window.addEventListener("resize",resize);setTimeout(resize,50);
+function clearBoard(){const r=canvas.getBoundingClientRect();ctx.fillStyle="#fff";ctx.fillRect(0,0,r.width,r.height)}
+function applyState(s){
+  lastState=s;$("timer").textContent=(s.timeLeft??60)+"s";$("round").textContent="第 "+(s.round||0)+" 题";
+  $("word").textContent=s.publicWord||"等待开始";$("category").textContent=s.category?("分类："+s.category):"准备中";
+  $("drawer").textContent="画手："+(s.drawerName||"等待开始");$("drawerBottom").textContent=s.drawerName||"等待开始";
+  $("status").textContent=s.started?"正在作画中":(s.revealed?"本题已公布":"等待下一题");
+  if(s.latestGuess!==null&&s.latestGuess!==undefined)$("latest").textContent=s.latestGuess;
+}
+window.addEventListener("message",e=>{
+  const m=e.data;if(!m)return;
+  if(m.type==="state"||m.type==="round-start"||m.type==="guess"||m.type==="reveal"){
+    applyState(m);
+    if(m.type==="round-start"){$("latest").textContent="—";$("overlay").classList.remove("show")}
+    if(m.type==="reveal"){
+      $("emoji").textContent=m.reason==="猜对啦"?"🎉":"👀";$("headline").textContent=m.reason||"公布答案";$("answer").textContent=m.publicWord||"";
+      $("overlay").classList.add("show");setTimeout(()=>$("overlay").classList.remove("show"),2600);
+    }
+  }else if(m.type==="clear"){clearBoard()}
+  else if(m.type==="canvas-snapshot"){
+    const im=new Image();im.onload=()=>{const r=canvas.getBoundingClientRect();clearBoard();ctx.drawImage(im,0,0,r.width,r.height)};im.src=m.data;
+  }else if(m.type==="stroke-start"){
+    const r=canvas.getBoundingClientRect();drawing=true;ctx.beginPath();ctx.strokeStyle=m.color;ctx.lineWidth=m.size;ctx.moveTo(m.x*r.width,m.y*r.height);
+  }else if(m.type==="stroke-move"&&drawing){
+    const r=canvas.getBoundingClientRect();ctx.strokeStyle=m.color;ctx.lineWidth=m.size;ctx.lineTo(m.x*r.width,m.y*r.height);ctx.stroke();
+  }else if(m.type==="stroke-end"){drawing=false;ctx.closePath()}
+});
+if(window.opener){try{window.opener.postMessage({type:"projector-ready"},"*")}catch(e){}}
+$("full").onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}};
+</script>
+</body>
+</html>

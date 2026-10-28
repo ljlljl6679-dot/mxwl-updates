@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "version": "3.2.0",
+  "published_at": "2026-10-28T10:23:58Z",
+  "notes": "麦向未莱游戏中心首次上线内容：10款游戏；4款双端、6款单端",
+  "files": [
+    {
+      "path": "games/01_大富翁ULTRA/主持控制端.html",
+      "sha256": "eab46951b04b86cf5e744572df7662d61dda504b0a2c1939e0eaa5771a651b3b",
+      "size": 94978,
+      "url": "files/eab46951b04b86cf5e744572df7662d61dda504b0a2c1939e0eaa5771a651b3b"
+    },
+    {
+      "path": "games/01_大富翁ULTRA/使用说明.txt",
+      "sha256": "eb63e56cca1a0a426e8066b204922e6971ff98e5654dbe565f48aa13e511276c",
+      "size": 2256,
+      "url": "files/eb63e56cca1a0a426e8066b204922e6971ff98e5654dbe565f48aa13e511276c"
+    },
+    {
+      "path": "games/01_大富翁ULTRA/投屏端.html",
+      "sha256": "cb2efb4b78cf0294a51a1d368d0ae4dc191dabc7c7fbff99bcc09435f1ddfe4a",
+      "size": 43178,
+      "url": "files/cb2efb4b78cf0294a51a1d368d0ae4dc191dabc7c7fbff99bcc09435f1ddfe4a"
+    },
+    {
+      "path": "games/01_大富翁ULTRA/界面预览（可选）/语音厅大富翁双屏_主持端预览.png",
+      "sha256": "7334c30b3619ea06172783f46870d2ab1714c42b40a47a079dc5bbb3c147e948",
+      "size": 993303,
+      "url": "files/7334c30b3619ea06172783f46870d2ab1714c42b40a47a079dc5bbb3c147e948"
+    },
+    {
+      "path": "games/01_大富翁ULTRA/界面预览（可选）/语音厅大富翁双屏_投屏端事件预览.png",
+      "sha256": "63f72e5a6a3f003d3b44cca55a1cd199095ec568a96deb631f63880ac909d4de",
+      "size": 501665,
+      "url": "files/63f72e5a6a3f003d3b44cca55a1cd199095ec568a96deb631f63880ac909d4de"
+    },
+    {
+      "path": "games/01_大富翁ULTRA/界面预览（可选）/语音厅大富翁双屏_投屏端预览.png",
+      "sha256": "f2fce12f76614e61dcfda3c34d9125ee02f02ec62e5879822671fbf38096575a",
+      "size": 1229382,
+      "url": "files/f2fce12f76614e61dcfda3c34d9125ee02f02ec62e5879822671fbf38096575a"
+    },
+    {
+      "path": "games/02_你画我猜/你画我猜_主持控制端.html",
+      "sha256": "67866610ea009f0ccc581ad35828c03e3033ade5b7fd0dedb390f5716c8e1566",
+      "size": 16086,
+      "url": "files/67866610ea009f0ccc581ad35828c03e3033ade5b7fd0dedb390f5716c8e1566"
+    },
+    {
+      "path": "games/02_你画我猜/你画我猜_投屏端.html",
+      "sha256": "b6760feb553abba788c645cb71aeb8624ef1b8f661d138b911e2d4e64a402ece",
+      "size": 7714,
+      "url": "files/b6760feb553abba788c645cb71aeb8624ef1b8f661d138b911e2d4e64a402ece"
+    },
+    {
+      "path": "games/02_你画我猜/使用说明.txt",
+      "sha256": "3640d59ec966d87a3d3f5be1086998151d08c9382651cea103c4a6c6d56a3fcf",
+      "size": 648,
+      "url": "files/3640d59ec966d87a3d3f5be1086998151d08c9382651cea103c4a6c6d56a3fcf"
+    },
+    {
+      "path": "games/03_真心话大冒险/使用说明.txt",
+      "sha256": "922c704c9cef4502274975d09d47cfdc0805e8c4ca42a4a5c4029768645d54c6",
+      "size": 692,
+      "url": "files/922c704c9cef4502274975d09d47cfdc0805e8c4ca42a4a5c4029768645d54c6"
+    },
+    {
+      "path": "games/03_真心话大冒险/真心话大冒险_主持控制端.html",
+      "sha256": "d846f2300c9a5885a9ada0b42da5b5bceffe92a071ce5bee86ea8e5dec0d6145",
+      "size": 20560,
+      "url": "files/d846f2300c9a5885a9ada0b42da5b5bceffe92a071ce5bee86ea8e5dec0d6145"
+    },
+    {
+      "path": "games/03_真心话大冒险/真心话大冒险_投屏端.html",
+      "sha256": "0b20d0074dcce9f62e62d0eb8a106169fa45ebb460daeaf50a363e3c8002438c",
+      "size": 4743,
+      "url": "files/0b20d0074dcce9f62e62d0eb8a106169fa45ebb460daeaf50a363e3c8002438c"
+    },
+    {
+      "path": "games/04_谁是卧底/使用说明.txt",
+      "sha256": "a477ad16c2be531d549ce496f5f9ba9a7676017babe9f05693c7167ff80adae0",
+      "size": 332,
+      "url": "files/a477ad16c2be531d549ce496f5f9ba9a7676017babe9f05693c7167ff80adae0"
+    },
+    {
+      "path": "games/04_谁是卧底/谁是卧底_主持控制端.html",
+      "sha256": "52f3f42b54a341c005653ba227e2fac8835eae6cbed155f904f8fa53bc1e4a3f",
+      "size": 11699,
+      "url": "files/52f3f42b54a341c005653ba227e2fac8835eae6cbed155f904f8fa53bc1e4a3f"
+    },
+    {
+      "path": "games/04_谁是卧底/谁是卧底_投屏端.html",
+      "sha256": "03228e1a06b6d2396c312ee9d0ff45c8e8001d99ad20e7842a5b9c19f5ceec7f",
+      "size": 5994,
+      "url": "files/03228e1a06b6d2396c312ee9d0ff45c8e8001d99ad20e7842a5b9c19f5ceec7f"
+    },
+    {
+      "path": "games/05_九奖紫色转盘/屿见你_9奖项_紫色高级特效直播转盘.html",
+      "sha256": "c7a9f067f5868c7873cdb4578fa6a1c84a5f0ed5d13d2e60b3b3b5c96a714dfe",
+      "size": 19026,
+      "url": "files/c7a9f067f5868c7873cdb4578fa6a1c84a5f0ed5d13d2e60b3b3b5c96a714dfe"
+    },
+    {
+      "path": "games/06_紫色自走棋/屿见你自走棋_紫色豪华版_配置备份升级.html",
+      "sha256": "7e5fa069b39e74e6a65e25fcc031c19558233ea364eba8a59e3aac00f559e5ae",
+      "size": 60571,
+      "url": "files/7e5fa069b39e74e6a65e25fcc031c19558233ea364eba8a59e3aac00f559e5ae"
+    },
+    {
+      "path": "games/07_数字炸弹/语音厅数字炸弹投屏小游戏.html",
+      "sha256": "829181758d1274b9ea3b33509de76c51fd59f0454d981b31a7e387fd79de63c0",
+      "size": 10635,
+      "url": "files/829181758d1274b9ea3b33509de76c51fd59f0454d981b31a7e387fd79de63c0"
+    },
+    {
+      "path": "games/08_枫叶转盘/暖阳音社_黄色枫叶风_直播转盘.html",
+      "sha256": "50baebb7231eea20de74b745f5555cc2e316d7930bd2fd295fe1b3459f30dfcf",
+      "size": 22833,
+      "url": "files/50baebb7231eea20de74b745f5555cc2e316d7930bd2fd295fe1b3459f30dfcf"
+    },
+    {
+      "path": "games/09_梦露蓝色转盘/梦露_转盘活动_指针对正修正版.html",
+      "sha256": "5464af8335096bb45e96881501671ed44d4e22b7e24291178677e6984d5cff82",
+      "size": 382016,
+      "url": "files/5464af8335096bb45e96881501671ed44d4e22b7e24291178677e6984d5cff82"
+    },
+    {
+      "path": "games/10_梦露粉色原图转盘/梦露转盘活动_原图修复可旋转版.html",
+      "sha256": "aed60caf6260615952fd719f5cb7f6f38f2ee949910f91b45f08a7c4313e5571",
+      "size": 8281509,
+      "url": "files/aed60caf6260615952fd719f5cb7f6f38f2ee949910f91b45f08a7c4313e5571"
+    },
+    {
+      "path": "games/_mxwl_catalog.json",
+      "sha256": "49e095c0321047a02c377320d67ba944de507d31aa3ebfe5677b49074f22e090",
+      "size": 4358,
+      "url": "files/49e095c0321047a02c377320d67ba944de507d31aa3ebfe5677b49074f22e090"
+    }
+  ],
+  "signature": "4ISKc8qqZ8ZkADg1NNukOxgFP/P8ApvkRJrEOxevZRj3vUrRp/2YTnkETQuqNLB5kQlO5Utn0Y+UHYkf0+6vAg=="
+}
