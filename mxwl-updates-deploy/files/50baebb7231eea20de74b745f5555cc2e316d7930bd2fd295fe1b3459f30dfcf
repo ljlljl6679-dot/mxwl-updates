@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>暖阳音社 转盘活动</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --ink:#6f3b0e;
+  --ink2:#8f541a;
+  --cream:#fffaf0;
+  --cream2:#fff0c8;
+  --amber:#f0b53a;
+  --amber2:#ffd875;
+  --orange:#e08b22;
+  --brown:#7b430e;
+  --glass:rgba(255,249,226,.44);
+  --line:rgba(255,255,255,.46);
+}
+html,body{margin:0;height:100%}
+body{
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  color:var(--ink);
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 48% 6%, rgba(255,255,244,.96) 0%, rgba(255,241,190,.88) 21%, transparent 42%),
+    radial-gradient(circle at 11% 84%, rgba(255,214,98,.45) 0%, transparent 33%),
+    radial-gradient(circle at 86% 26%, rgba(244,176,61,.28) 0%, transparent 30%),
+    linear-gradient(145deg,#f9e8ad 0%,#efc25c 44%,#d68c2b 100%);
+}
+.page{position:relative;width:100vw;height:100vh;min-height:700px;padding:18px 22px;overflow:hidden}
+.page::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255,255,255,.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 26% 9%, rgba(255,255,255,.62) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 14%, rgba(255,255,255,.68) 0 1px, transparent 2px),
+    radial-gradient(circle at 92% 34%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 64% 84%, rgba(255,255,255,.5) 0 1px, transparent 2px);
+  opacity:.8;
+}
+.shell{
+  position:relative;z-index:2;width:min(97vw,1500px);height:min(93vh,880px);margin:0 auto;
+  border-radius:32px;padding:18px 18px 14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.08));
+  border:1px solid rgba(255,255,255,.42);
+  box-shadow:0 30px 80px rgba(119,66,11,.18), inset 0 0 0 1px rgba(255,255,255,.18);
+  backdrop-filter:blur(7px);
+}
+.poster{display:grid;grid-template-columns:58% 42%;height:100%;gap:12px;align-items:center}
+.left-side{position:relative;height:100%;display:flex;align-items:center;justify-content:center;padding-left:6px}
+.right-side{position:relative;height:100%;display:flex;align-items:center;justify-content:center;padding:0 18px 0 8px}
+
+/* decorative maple leaves */
+.leaf{position:absolute;width:70px;height:70px;opacity:.34;filter:drop-shadow(0 8px 10px rgba(116,62,8,.12));pointer-events:none;z-index:0}
+.leaf::before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,#f5bd37,#d87c1f);clip-path:polygon(50% 0%,58% 28%,73% 17%,68% 38%,91% 33%,73% 51%,92% 63%,65% 65%,70% 91%,52% 70%,50% 100%,46% 70%,27% 91%,33% 65%,7% 63%,27% 51%,8% 33%,32% 38%,27% 17%,43% 28%)}
+.leaf.l1{left:1.5%;top:5%;transform:rotate(-18deg) scale(.82)}
+.leaf.l2{right:2%;top:7%;transform:rotate(24deg) scale(.95)}
+.leaf.l3{left:4%;bottom:4%;transform:rotate(12deg) scale(.72)}
+.leaf.l4{right:5%;bottom:6%;transform:rotate(-20deg) scale(.88)}
+.leaf.l5{left:38%;top:2%;transform:rotate(36deg) scale(.5);opacity:.2}
+.leaf.l6{right:30%;bottom:3%;transform:rotate(-30deg) scale(.46);opacity:.18}
+
+/* wheel */
+.wheel-wrap{position:relative;width:min(56vw,820px);aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.aura{position:absolute;inset:7%;border-radius:50%;background:radial-gradient(circle, rgba(255,235,158,.30), rgba(228,144,31,.18) 45%, rgba(120,65,8,.03) 80%);filter:blur(34px)}
+.outer-ring{position:absolute;inset:4.8%;border-radius:50%;border:2px solid rgba(255,251,234,.95);box-shadow:0 0 0 4px rgba(185,112,20,.14),0 0 26px rgba(255,224,132,.28),inset 0 0 18px rgba(255,255,255,.20)}
+.outer-ring::before,.outer-ring::after{content:"";position:absolute;left:50%;transform:translateX(-50%);width:34px;height:34px;background:linear-gradient(180deg,#fff9e5,#f1b748);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 18px rgba(255,215,106,.36),0 0 0 3px rgba(255,255,255,.18)}
+.outer-ring::before{top:-18px}.outer-ring::after{bottom:-18px}
+.side-gem{position:absolute;top:50%;width:28px;height:28px;transform:translateY(-50%) rotate(45deg);background:linear-gradient(180deg,#fff9e5,#f1b748);box-shadow:0 0 18px rgba(255,215,106,.36),0 0 0 3px rgba(255,255,255,.18)}
+.side-gem.left{left:2.4%}.side-gem.right{right:2.4%}
+.pointer{position:absolute;left:50%;top:5.4%;transform:translateX(-50%);z-index:30;width:0;height:0;border-left:24px solid transparent;border-right:24px solid transparent;border-bottom:45px solid #fff9e7;filter:drop-shadow(0 6px 10px rgba(102,54,6,.22))}
+.pointer::after{content:"";position:absolute;left:-8px;top:8px;width:16px;height:16px;border-radius:50%;background:#e7a633;box-shadow:0 0 0 5px rgba(255,255,255,.28),0 0 18px rgba(255,213,99,.48)}
+.wheel{position:absolute;inset:9.5%;border-radius:50%;overflow:hidden;border:11px solid rgba(255,251,235,.84);box-shadow:0 24px 46px rgba(122,67,10,.18),inset 0 0 0 5px rgba(255,255,255,.10),inset 0 0 34px rgba(255,255,255,.12);transition:transform 5.2s cubic-bezier(.12,.77,.12,1);background:conic-gradient(from -22.5deg,#efb23e 0 45deg,#e69a2b 45deg 90deg,#f4c85b 90deg 135deg,#dc8724 135deg 180deg,#efb23e 180deg 225deg,#e69a2b 225deg 270deg,#f4c85b 270deg 315deg,#dc8724 315deg 360deg)}
+.wheel::before{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from -22.5deg,rgba(255,255,255,.88) 0 .75deg,transparent .75deg 45deg);-webkit-mask:radial-gradient(circle,transparent 0 15%,#000 15.5% 100%);mask:radial-gradient(circle,transparent 0 15%,#000 15.5% 100%);pointer-events:none}
+.wheel::after{content:"";position:absolute;inset:12%;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.20);pointer-events:none}
+
+/* Prize content: directly on big wedges, no floating cards */
+.segment-label{position:absolute;left:50%;top:50%;width:150px;height:132px;transform-origin:center center;z-index:8;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(95,48,4,.16))}
+.prize-group{width:150px;height:132px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;color:#fffdf7;text-align:center}
+.prize-icon{width:50px;height:50px;display:grid;place-items:center;margin-bottom:7px;font-size:28px;font-weight:900;color:#fffef7;text-shadow:0 0 12px rgba(255,255,255,.45),0 2px 4px rgba(102,54,6,.28)}
+.prize-text{display:block;max-width:144px;font-size:17px;font-weight:900;line-height:1.14;letter-spacing:.02em;text-shadow:0 2px 4px rgba(100,52,6,.48),0 0 8px rgba(255,255,255,.15);word-break:keep-all}
+.prize-group.long .prize-text{font-size:14px;max-width:148px}
+.prize-group.short .prize-text{font-size:18px;max-width:134px}
+.center-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:196px;height:196px;border-radius:50%;border:1px dashed rgba(255,255,255,.26);z-index:11;pointer-events:none}
+.center-btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:164px;height:164px;border-radius:50%;border:9px solid rgba(255,253,243,.96);background:radial-gradient(circle at 35% 30%,#fff9df 0%,#ffd66c 42%,#e49a26 100%);color:#7a410d;font-size:28px;font-weight:900;letter-spacing:.05em;line-height:1.12;box-shadow:0 14px 24px rgba(105,56,7,.18),inset 0 0 18px rgba(255,255,255,.44),0 0 30px rgba(255,213,102,.24);z-index:21;cursor:pointer}
+.center-btn small{display:block;font-size:17px;margin-top:4px;font-weight:900}.center-btn:hover{filter:brightness(1.04)}.center-btn:disabled{cursor:default;opacity:.92}
+
+/* right poster */
+.right-inner{width:min(100%,560px);display:flex;flex-direction:column;align-items:center;gap:17px;position:relative}
+.club-en{font-family:Georgia,serif;font-size:18px;letter-spacing:.42em;text-transform:uppercase;color:#9b6220;opacity:.9}
+.brand-script{font-size:clamp(24px,2.4vw,44px);font-weight:800;letter-spacing:.08em;color:#7b430e;text-shadow:0 1px 0 rgba(255,255,255,.55),0 4px 18px rgba(123,67,14,.10)}
+.big-title{text-align:center;line-height:.96}
+.big-title .main{display:block;font-size:clamp(54px,5.6vw,98px);font-weight:900;letter-spacing:.04em;background:linear-gradient(180deg,#fffdf6 0%,#f9e9b6 30%,#d99529 67%,#fff4cc 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1px rgba(122,67,13,.18);filter:drop-shadow(0 8px 8px rgba(114,61,9,.14));text-shadow:0 0 22px rgba(255,243,194,.18)}
+.big-title .sub{display:block;margin-top:10px;font-size:clamp(17px,1.35vw,24px);letter-spacing:.45em;color:#7f4b17;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.glow-divider{width:80%;height:1px;background:linear-gradient(90deg,transparent,rgba(124,73,19,.48),transparent)}
+.info-plaque{position:relative;width:100%;padding:22px 24px;border-radius:24px;background:linear-gradient(180deg,rgba(255,252,239,.70),rgba(255,241,201,.46));border:1px solid rgba(255,255,255,.60);box-shadow:0 16px 34px rgba(104,55,7,.10),inset 0 0 0 1px rgba(255,255,255,.20)}
+.info-plaque::before,.info-plaque::after{content:"";position:absolute;top:50%;width:22px;height:22px;transform:translateY(-50%) rotate(45deg);background:linear-gradient(180deg,#fff8df,#eaa63a);box-shadow:0 0 12px rgba(239,179,69,.24),0 0 0 2px rgba(255,255,255,.30)}
+.info-plaque::before{left:-10px}.info-plaque::after{right:-10px}
+.plaque-title{font-size:clamp(25px,2.4vw,40px);font-weight:900;letter-spacing:.12em;text-align:center;color:#7b430e}
+.plaque-sub{margin-top:8px;text-align:center;color:#995a17;font-size:clamp(14px,1vw,18px);letter-spacing:.16em}
+.rule-box{margin-top:18px;border-radius:18px;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,.54),rgba(255,255,255,.20));border:1px solid rgba(255,255,255,.44)}
+.rule-line{font-size:17px;line-height:1.75;text-align:center;color:#7d460f;font-weight:800}.rule-line strong{font-size:1.04em;color:#6d3707}
+.mini-status{margin-top:16px;padding:12px 16px;border-radius:16px;background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.45);font-size:15px;color:#854b13;text-align:center;font-weight:700}
+.live-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,250,230,.70);border:1px solid rgba(255,255,255,.58);font-size:14px;font-weight:900;color:#7e4812;box-shadow:0 10px 18px rgba(104,55,7,.08)}
+.live-chip .pulse{width:9px;height:9px;border-radius:50%;background:#e5a02e;box-shadow:0 0 0 5px rgba(229,160,46,.12),0 0 14px rgba(229,160,46,.36)}
+.footer{position:absolute;left:50%;bottom:13px;transform:translateX(-50%);font-size:13px;color:#89521b;opacity:.92;letter-spacing:.06em}
+
+/* popup */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(94,49,6,.28);backdrop-filter:blur(4px);z-index:100;padding:16px}.modal.show{display:flex}
+.popup{width:min(92vw,440px);border-radius:26px;padding:28px 24px 20px;background:linear-gradient(180deg,rgba(255,254,247,.98),rgba(255,241,205,.97));box-shadow:0 28px 76px rgba(87,44,4,.24);text-align:center;color:#74400e;position:relative;animation:pop .28s ease-out;border:1px solid rgba(255,255,255,.72);overflow:hidden}
+.popup::before{content:"";position:absolute;inset:-25%;background:conic-gradient(from 0deg,transparent,rgba(255,216,106,.12),transparent 20%);animation:shine 2.4s linear infinite;pointer-events:none}
+@keyframes shine{to{transform:rotate(360deg)}}
+@keyframes pop{from{transform:scale(.9);opacity:.2}to{transform:scale(1);opacity:1}}
+.popup .burst{font-size:40px;margin-bottom:8px}.popup h2{margin:0 0 8px;font-size:28px;font-weight:900;letter-spacing:.05em}.popup p{margin:0 0 18px;font-size:16px;color:#8e5419}.popup .big-prize{display:inline-flex;align-items:center;justify-content:center;min-width:260px;min-height:62px;padding:12px 20px;border-radius:18px;background:linear-gradient(180deg,#fff8df,#ffd980);box-shadow:inset 0 0 0 1px rgba(255,255,255,.70),0 8px 20px rgba(108,57,7,.10);color:#733b09;font-size:25px;font-weight:900;margin-bottom:18px}.popup .actions{display:flex;gap:12px;justify-content:center}.popup button{border:0;border-radius:999px;padding:12px 22px;font-size:15px;font-weight:900;cursor:pointer}.btn-primary{background:linear-gradient(180deg,#f8c85f,#e29b27);color:#fffdf7;box-shadow:0 8px 18px rgba(113,57,9,.14)}.btn-secondary{background:#fff3cf;color:#8c5117}
+
+@media (max-width:1200px){.poster{grid-template-columns:56% 44%}.wheel-wrap{width:min(54vw,750px)}.big-title .main{font-size:clamp(48px,5.2vw,86px)}}
+@media (max-width:980px){body{overflow:auto}.page{height:auto;min-height:100vh}.shell{height:auto}.poster{grid-template-columns:1fr;gap:18px;padding-bottom:22px}.left-side{min-height:630px}.right-side{padding:0 6px 8px}.wheel-wrap{width:min(92vw,700px)}.footer{position:static;transform:none;text-align:center;margin-top:10px}}
+@media (max-width:700px){.page{padding:10px}.shell{padding:10px;border-radius:22px}.wheel-wrap{width:min(96vw,560px)}.pointer{border-left-width:16px;border-right-width:16px;border-bottom-width:30px}.pointer::after{left:-5px;top:6px;width:10px;height:10px;box-shadow:0 0 0 3px rgba(255,255,255,.26)}.segment-label{width:98px;height:94px}.prize-group{width:98px;height:94px}.prize-icon{width:34px;height:34px;font-size:18px;margin-bottom:4px}.prize-text{max-width:94px;font-size:11px;line-height:1.10}.prize-group.long .prize-text{font-size:10px;max-width:98px}.prize-group.short .prize-text{font-size:12px}.center-ring{width:146px;height:146px}.center-btn{width:118px;height:118px;font-size:21px;border-width:6px}.center-btn small{font-size:14px}.brand-script{font-size:24px}.big-title .main{font-size:46px}.big-title .sub{font-size:14px;letter-spacing:.20em}.plaque-title{font-size:24px}.rule-line{font-size:15px}.mini-status{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="leaf l1"></div><div class="leaf l2"></div><div class="leaf l3"></div><div class="leaf l4"></div><div class="leaf l5"></div><div class="leaf l6"></div>
+  <div class="shell">
+    <div class="poster">
+      <div class="left-side">
+        <div class="wheel-wrap">
+          <div class="aura"></div>
+          <div class="outer-ring"></div><div class="side-gem left"></div><div class="side-gem right"></div>
+          <div class="pointer"></div>
+          <div class="wheel" id="wheel"></div>
+          <div class="center-ring"></div>
+          <button class="center-btn" id="spinBtn">开启转盘<small>开始</small></button>
+        </div>
+      </div>
+
+      <div class="right-side">
+        <div class="right-inner">
+          <div class="live-chip"><span class="pulse"></span>暖阳音社 LIVE 活动</div>
+          <div class="club-en">WARM SUN MUSIC CLUB</div>
+          <div class="brand-script">暖阳音社</div>
+          <div class="big-title">
+            <span class="main">转盘活动</span>
+            <span class="sub">暖 阳 秋 日 ✦ 幸 运 开 启</span>
+          </div>
+          <div class="glow-divider"></div>
+          <div class="info-plaque">
+            <div class="plaque-title">玩法介绍</div>
+            <div class="plaque-sub">抽到什么内容，就按什么内容执行</div>
+            <div class="rule-box">
+              <div class="rule-line">首次轮盘：<strong>99</strong></div>
+              <div class="rule-line">二次及以后：<strong>299</strong></div>
+              <div class="rule-line">点击中间“开启转盘”即可开始抽奖</div>
+            </div>
+            <div class="mini-status" id="statusText">准备就绪，点击“开启转盘”开始今晚的幸运抽取</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">暖阳音社 · 秋日幸运福利进行中</div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="popup">
+    <div class="burst">🍁 ✨ 🍁</div>
+    <h2>恭喜抽中</h2>
+    <div class="big-prize" id="popupPrize">半首歌</div>
+    <p id="popupText">暖阳音社专属好运已送达。</p>
+    <div class="actions">
+      <button class="btn-secondary" id="closeModal">关闭</button>
+      <button class="btn-primary" id="againBtn">再转一次</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const wheel = document.getElementById('wheel');
+  const spinBtn = document.getElementById('spinBtn');
+  const statusText = document.getElementById('statusText');
+  const modal = document.getElementById('modal');
+  const popupPrize = document.getElementById('popupPrize');
+  const popupText = document.getElementById('popupText');
+  const closeModal = document.getElementById('closeModal');
+  const againBtn = document.getElementById('againBtn');
+
+  // 隐藏权重：页面不会显示这些数字。
+  const prizes = [
+    { name:'点歌卡', weight:10, msg:'恭喜获得点歌卡，可以点一首喜欢的歌。' },
+    { name:'冠歌续期卡', weight:1, msg:'恭喜获得冠歌续期卡，专属权益继续延长。' },
+    { name:'半首歌', weight:15, msg:'恭喜获得半首歌，送你一段专属演唱。' },
+    { name:'抽象歌单', weight:15, msg:'恭喜获得抽象歌单，解锁一份特别歌单。' },
+    { name:'音频卡', weight:10, msg:'恭喜获得音频卡，可兑换对应音频福利。' },
+    { name:'强开火车（需补299）', weight:0.9, msg:'恭喜抽中强开火车（需补299），请按活动规则执行。' },
+    { name:'谢谢参与', weight:22, msg:'感谢参与，下一次说不定就是惊喜。' },
+    { name:'再来一次', weight:25, msg:'好运加倍！你获得一次立即再抽机会。' }
+  ];
+
+  const prettyNames = {
+    '点歌卡':'点歌卡',
+    '冠歌续期卡':'冠歌续期卡',
+    '半首歌':'半首歌',
+    '抽象歌单':'抽象歌单',
+    '音频卡':'音频卡',
+    '强开火车（需补299）':'强开火车<br>（需补299）',
+    '谢谢参与':'谢谢参与',
+    '再来一次':'再来一次'
+  };
+  const icons = {
+    '点歌卡':'♫',
+    '冠歌续期卡':'冠',
+    '半首歌':'♪',
+    '抽象歌单':'歌',
+    '音频卡':'声',
+    '强开火车（需补299）':'车',
+    '谢谢参与':'谢',
+    '再来一次':'↻'
+  };
+
+  const totalWeight = prizes.reduce((sum,p)=>sum+p.weight,0);
+
+  function layoutPrizeLabels(){
+    wheel.querySelectorAll('.segment-label').forEach(el => el.remove());
+    const wheelSize = wheel.getBoundingClientRect().width;
+    const radius = wheelSize * 0.335;
+
+    prizes.forEach((item, i) => {
+      const centerAngle = i * 45; // wedge centers because the conic gradient starts at -22.5°
+      const label = document.createElement('div');
+      label.className = 'segment-label';
+      const len = item.name.length;
+      const sizeClass = len >= 8 ? 'long' : (len <= 4 ? 'short' : '');
+
+      label.innerHTML = `<div class="prize-group ${sizeClass}">
+        <span class="prize-icon">${icons[item.name] || '✦'}</span>
+        <span class="prize-text">${prettyNames[item.name] || item.name}</span>
+      </div>`;
+
+      // Whole group follows the wedge direction naturally.
+      // Bottom prizes are intentionally allowed to rotate upside-down like formal wheel posters.
+      label.style.transform = `translate(-50%,-50%) rotate(${centerAngle}deg) translateY(-${radius}px)`;
+      wheel.appendChild(label);
+    });
+  }
+
+  layoutPrizeLabels();
+  window.addEventListener('resize', () => requestAnimationFrame(layoutPrizeLabels));
+
+  let spinning = false;
+  let currentRotation = 0;
+
+  function secureRandom(){
+    const a = new Uint32Array(1);
+    crypto.getRandomValues(a);
+    return a[0] / 4294967296;
+  }
+  function pickWeightedIndex(){
+    let r = secureRandom() * totalWeight;
+    for(let i=0;i<prizes.length;i++){
+      r -= prizes[i].weight;
+      if(r < 0) return i;
+    }
+    return prizes.length - 1;
+  }
+  function norm(deg){ return ((deg % 360) + 360) % 360; }
+
+  // Self-contained sound: no external audio files.
+  let audioCtx = null;
+  function ensureAudio(){
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function tone(freq, start, duration, volume=0.025, type='sine'){
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(volume, start + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(start); osc.stop(start + duration + 0.02);
+  }
+  function playSpinSound(){
+    ensureAudio();
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(520, now + 0.58);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.03, now + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.62);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.64);
+    for(let i=0;i<10;i++) tone(820-i*28, now+0.14+i*0.14, 0.045, 0.012, 'square');
+  }
+  function playWinSound(){
+    ensureAudio(); const now = audioCtx.currentTime;
+    tone(659.25, now, .28, .045);
+    tone(880.00, now+.08, .28, .045);
+    tone(1174.66, now+.16, .32, .045);
+  }
+
+  function showPopup(prize){
+    popupPrize.textContent = prize.name;
+    popupText.textContent = prize.msg;
+    modal.classList.add('show');
+  }
+
+  function spin(){
+    if(spinning) return;
+    modal.classList.remove('show');
+    spinning = true;
+    spinBtn.disabled = true;
+    statusText.textContent = '转盘旋转中，请稍候…';
+    playSpinSound();
+
+    const index = pickWeightedIndex();
+    const chosen = prizes[index];
+
+    // Each wedge center is 0°,45°,... because the visual wheel starts at -22.5°.
+    // Rotate chosen wedge center exactly to the fixed top pointer (0°).
+    const targetCenter = index * 45;
+    const currentNorm = norm(currentRotation);
+    const wantedNorm = norm(-targetCenter);
+    const delta = norm(wantedNorm - currentNorm);
+
+    const a = new Uint32Array(1);
+    crypto.getRandomValues(a);
+    const fullTurns = 6 + (a[0] % 3); // 6–8 turns
+    currentRotation += fullTurns * 360 + delta;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+    setTimeout(() => {
+      spinning = false;
+      spinBtn.disabled = false;
+      statusText.textContent = `恭喜抽中：${chosen.name}`;
+      playWinSound();
+      showPopup(chosen);
+    }, 5300);
+  }
+
+  spinBtn.addEventListener('click', spin);
+  againBtn.addEventListener('click', spin);
+  closeModal.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('show'); });
+})();
+</script>
+</body>
+</html>

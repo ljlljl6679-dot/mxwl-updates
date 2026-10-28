@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>谁是卧底 · 主持控制端</title>
+<style>
+:root{--bg1:#10051f;--bg2:#28104b;--bg3:#4b1d76;--panel:rgba(255,255,255,.10);--border:rgba(255,255,255,.14);--text:#fff;--muted:#cfc2e5}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#fff}
+body{background:radial-gradient(circle at 18% 12%,rgba(239,110,232,.19),transparent 30%),radial-gradient(circle at 84% 18%,rgba(127,124,255,.22),transparent 32%),linear-gradient(135deg,var(--bg1),var(--bg2) 58%,var(--bg3))}
+.app{padding:18px;display:flex;flex-direction:column;gap:14px}.top{display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:13px;align-items:center}
+.logo{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:32px;background:linear-gradient(135deg,#d88cff,#7e67ff)}
+.title{font-size:44px;font-weight:1000}.sub{color:var(--muted);font-size:13px;margin-top:5px}
+button{border:none;border-radius:13px;padding:11px 14px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,#b875ff,#7d66ff);color:#fff}
+button.secondary{background:rgba(255,255,255,.09);border:1px solid var(--border)}button.danger{background:linear-gradient(135deg,#ff7a9f,#d65cff)}
+.main{display:grid;grid-template-columns:1fr 380px;gap:14px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:14px;backdrop-filter:blur(14px)}
+.statusbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px 14px;border-radius:17px;background:rgba(255,255,255,.06)}
+.statusbar b{display:block;font-size:24px}.round{font-size:28px;font-weight:1000;background:rgba(0,0,0,.18);padding:8px 16px;border-radius:14px}.right{text-align:right}
+.players{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.pcard{min-height:160px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.pcard.out{opacity:.42}.name{font-size:20px;font-weight:1000}.role{font-size:13px;color:var(--muted);margin-top:4px}.secret{font-size:26px;font-weight:1000;color:#f0dfff;margin:12px 0}.mask{font-size:16px;color:#bfb0ce}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.side{display:flex;flex-direction:column;gap:12px}.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:13px}.card h3{margin:0 0 10px}
+input,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.13);background:rgba(0,0,0,.2);color:white;outline:none}select option{color:#111}
+.row{display:grid;grid-template-columns:1fr auto;gap:8px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.tag{background:rgba(255,255,255,.09);padding:7px 9px;border-radius:999px;font-size:13px}
+.private{line-height:1.7;color:var(--muted)}.private b{color:white}.log{font-size:13px;max-height:130px;overflow:auto;color:#ddd1ed}.log div{padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff7699;margin-right:6px}.dot.on{background:#7bf0c3}.empty{grid-column:1/-1;text-align:center;color:#c7b8d8;padding:120px 0}
+@media(max-width:1000px){.main{grid-template-columns:1fr}.players{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><div class="brand"><div class="logo">🕵️</div><div><div class="title">谁是卧底 · 控制端</div><div class="sub">主持专用 · 身份与词语不会同步到投屏端</div></div></div><div><button id="openProjector">🖥 打开投屏窗口</button> <button class="secondary" id="fullscreen">⛶ 全屏</button></div></div>
+<div class="main">
+<section class="panel">
+<div class="statusbar"><div>游戏阶段<b id="phase">准备中</b></div><div class="round">第 <span id="round">0</span> 轮</div><div class="right">存活玩家<b><span id="alive">0</span> 人</b></div></div>
+<div class="players" id="players"><div class="empty">先在右侧添加玩家<br>再开始游戏</div></div>
+</section>
+<aside class="panel side">
+<div class="card"><h3>👥 添加玩家</h3><div class="row"><input id="nameInput" placeholder="输入玩家名字"><button id="addName">添加</button></div><div class="tags" id="tags"></div></div>
+<div class="card"><h3>📝 词语设置</h3><div class="row2"><input id="civilianWord" placeholder="平民词"><input id="undercoverWord" placeholder="卧底词"></div><div style="height:8px"></div><div class="row2"><select id="undercoverCount"><option value="1">1 个卧底</option><option value="2">2 个卧底</option></select><button class="secondary" id="randomWords">🎲 随机词组</button></div><div style="height:8px"></div><button id="startGame" style="width:100%">开始游戏并随机分词</button></div>
+<div class="card"><h3>🔐 主持私密信息</h3><div class="private" id="privateInfo">开始后显示卧底名单和词语。</div></div>
+<div class="card"><h3>🗳 淘汰与轮次</h3><div class="row"><select id="voteSelect"><option value="">选择玩家</option></select><button class="danger" id="eliminate">淘汰</button></div><div style="height:8px"></div><div class="row2"><button class="secondary" id="nextRound">下一轮</button><button id="revealAll">结束并公布身份</button></div></div>
+<div class="card"><h3>📜 游戏记录</h3><div class="log" id="log"><div>等待开始…</div></div></div>
+<div class="card"><h3>📡 投屏连接</h3><div><span class="dot" id="dot"></span><span id="connText">尚未打开投屏窗口</span></div></div>
+</aside>
+</div></div>
+<script>
+const $=id=>document.getElementById(id);
+const pairs=[["奶茶","咖啡"],["可乐","雪碧"],["火锅","麻辣烫"],["包子","饺子"],["苹果","梨"],["草莓","樱桃"],["猫","狗"],["企鹅","海豹"],["兔子","仓鼠"],["老虎","狮子"],["海豚","鲸鱼"],["手机","平板"],["耳机","音箱"],["电脑","电视"],["口红","唇釉"],["雨伞","雨衣"],["篮球","足球"],["羽毛球","乒乓球"],["跑步","散步"],["游泳","潜水"],["唱歌","朗读"],["跳舞","健身"],["月亮","太阳"],["彩虹","极光"],["电影院","剧院"],["高铁","地铁"],["飞机","火车"],["麦克风","耳返"],["主持人","歌手"],["点歌","冠歌"],["语音厅","直播间"],["礼物","红包"],["连麦","排麦"]];
+let names=[],players=[],round=0,started=false,revealed=false,projector=null,civWord="",ucWord="";
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function log(t){let d=document.createElement("div");d.textContent=t;$("log").prepend(d)}
+function renderTags(){$("tags").innerHTML=names.map((n,i)=>`<span class="tag">${esc(n)} <b data-i="${i}" style="cursor:pointer">×</b></span>`).join("");document.querySelectorAll(".tag b").forEach(x=>x.onclick=()=>{names.splice(+x.dataset.i,1);renderTags()})}
+function addName(){let v=$("nameInput").value.trim();if(!v||names.includes(v))return;names.push(v);$("nameInput").value="";renderTags()}
+$("addName").onclick=addName;$("nameInput").addEventListener("keydown",e=>{if(e.key==="Enter")addName()});
+$("randomWords").onclick=()=>{let p=pairs[Math.floor(Math.random()*pairs.length)];$("civilianWord").value=p[0];$("undercoverWord").value=p[1]};
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function state(extra={}){return Object.assign({type:"state",round,started,revealed,phase:revealed?"身份已公布":started?"游戏进行中":"准备中",alive:players.filter(p=>!p.out).length,players:players.map(p=>({name:p.name,out:p.out,publicRole:revealed?p.role:null})),civilianWord:revealed?civWord:null,undercoverWord:revealed?ucWord:null},extra)}
+function send(m){try{if(projector&&!projector.closed)projector.postMessage(m,"*")}catch(e){}}
+window.addEventListener("message",e=>{if(e.data&&e.data.type==="projector-ready"){projector=e.source;$("dot").classList.add("on");$("connText").textContent="投屏窗口已连接";send(state())}});
+$("openProjector").onclick=()=>{projector=window.open("谁是卧底_投屏端.html","undercoverProjector","width=1280,height=720");setTimeout(()=>send(state()),700)};
+function renderPlayers(){
+$("alive").textContent=players.filter(p=>!p.out).length;
+if(!players.length){$("players").innerHTML='<div class="empty">先在右侧添加玩家<br>再开始游戏</div>';return}
+$("players").innerHTML=players.map((p,i)=>`<div class="pcard ${p.out?'out':''}"><div><div class="name">${esc(p.name)} ${p.out?'（已淘汰）':''}</div><div class="role">${revealed?p.role:(p.shown?"身份已查看":"身份未查看")}</div><div class="secret ${p.shown||revealed?'':'mask'}">${p.shown||revealed?esc(p.word):"点击查看词语"}</div></div><div class="actions"><button class="secondary show" data-i="${i}" ${p.out||revealed?'disabled':''}>${p.shown?'隐藏词语':'查看词语'}</button><button class="danger outbtn" data-i="${i}" ${p.out?'disabled':''}>淘汰</button></div></div>`).join("");
+document.querySelectorAll(".show").forEach(b=>b.onclick=()=>{let i=+b.dataset.i;players[i].shown=!players[i].shown;renderPlayers()});
+document.querySelectorAll(".outbtn").forEach(b=>b.onclick=()=>eliminate(+b.dataset.i))}
+function renderPrivate(){let u=players.filter(p=>p.role==="卧底").map(p=>p.name).join("、");$("privateInfo").innerHTML=`平民词：<b>${esc(civWord)}</b><br>卧底词：<b>${esc(ucWord)}</b><br>卧底：<b>${esc(u)}</b>`}
+function renderVote(){$("voteSelect").innerHTML='<option value="">选择玩家</option>'+players.map((p,i)=>!p.out?`<option value="${i}">${esc(p.name)}</option>`:"").join("")}
+$("startGame").onclick=()=>{
+if(names.length<3){alert("至少需要3名玩家");return}
+civWord=$("civilianWord").value.trim();ucWord=$("undercoverWord").value.trim();if(!civWord||!ucWord){alert("请先填写两组词");return}
+let c=+$("undercoverCount").value;if(c===2&&names.length<5){alert("5人以下建议只设置1个卧底");return}
+let ids=shuffle([...Array(names.length).keys()]).slice(0,c);players=names.map((name,i)=>({name,role:ids.includes(i)?"卧底":"平民",word:ids.includes(i)?ucWord:civWord,out:false,shown:false}));
+round=1;started=true;revealed=false;$("phase").textContent="游戏进行中";$("round").textContent=round;$("log").innerHTML="";log("游戏开始：身份已随机分配");renderPlayers();renderPrivate();renderVote();send(state({type:"game-start"}))}
+function eliminate(i){if(!players[i]||players[i].out)return;players[i].out=true;players[i].shown=false;log(`第 ${round} 轮：${players[i].name} 被淘汰`);renderPlayers();renderVote();send(state({type:"eliminate",eliminated:players[i].name}))}
+$("eliminate").onclick=()=>{let v=$("voteSelect").value;if(v!=="")eliminate(+v)};
+$("nextRound").onclick=()=>{if(!started||revealed)return;round++;$("round").textContent=round;log(`进入第 ${round} 轮`);send(state({type:"next-round"}))};
+$("revealAll").onclick=()=>{if(!players.length)return;revealed=true;started=false;$("phase").textContent="身份已公布";players.forEach(p=>p.shown=true);renderPlayers();renderVote();log("主持已公布全部身份");send(state({type:"reveal"}))};
+$("fullscreen").onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}};
+renderTags();renderPlayers();
+</script>
+</body></html>
